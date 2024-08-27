@@ -1,7 +1,7 @@
 \NeedsTeXFormat{LaTeX2e}[2017/04/15]
 \LoadClass[11pt,a4paper]{article}
 \RequirePackage[no-math]{fontspec}
-\XeTeXlinebreaklocale "km"
+\XeTeXlinebreaklocale "khm" % or "km"
 \XeTeXlinebreakskip = 0pt plus 1pt minus .5pt
 \setmainfont[%
   Script=Khmer,
@@ -24,7 +24,7 @@
 \SetWatermarkColor{violet}
 \SetWatermarkHorCenter{.6cm}
 \SetWatermarkFontSize{10pt}
-\SetWatermarkText{\protect\faChrome{}~https://bunnybookshelf.blogspot.com}
+\SetWatermarkText{\protect\faChrome{}~https://khtug.blogspot.com}
 \RequirePackage{geometry}
 \geometry{%
 	left=.75cm,%
@@ -89,10 +89,11 @@
 \setlist[itemize,4]{t}
 % sub enumerate
 \RequirePackage{tasks}
-\NewPatternFormat{k}{\@alpkh}% cntformats package
-\NewPatternFormat{m}{\@khmer}% counter-format=tsk[l]
+%\usepackage{cntformats}
+%\NewPatternFormat{k}{\@alpkh}% cntformats package
+%\NewPatternFormat{m}{\@khmer}% counter-format=tsk[l]
 \settasks{%
-	counter-format={[tsk[a]]},%
+	label={[\alph*]},%
 	label-format=\color{magenta!50!black},%
 	label-offset=0.5ex,%
 	label-align=right,%
@@ -103,9 +104,9 @@
 	after-skip=0ex,%
 	after-item-skip=0.5ex%
 }
-\NewTasks[%
+\NewTasksEnvironment[%
   style=enumerate,%
-  counter-format={[tsk[1]]},%
+  label={[\alph*]},%
   label-format=\color{blue!50!gray},%
   label-offset=0.5ex,%
   label-align=right,%
@@ -115,7 +116,7 @@
   before-skip=0ex,%
   after-skip=0ex,%
   after-item-skip=0.5ex]{Enumerate}[\item]
-\NewTasks[%
+\NewTasksEnvironment[%
   style=itemize,
   label=\ensuremath{\bullet},
   label-format=\color{magenta!50!black},%
@@ -126,6 +127,10 @@
   column-sep=1ex,%
   after-item-skip=0.5ex]{Itemize}[\item]
 %
+\def\dashfill{\leavevmode \cleaders \hb@xt@ 5pt{\hss-\hss }\hfill \kern \z@}
+\def\crulefill{\leavevmode \cleaders \hb@xt@ 1pt{\hss-\hss }\hfill \kern \z@}
+\def\borderline#1{{\color{blue}{\crulefill[ {\sffamily #1} ]\crulefill}}}
+%
 \RequirePackage{expl3}[2017/04/15]
 \ProvidesExplClass{xam}{2018/04/19}{1.0}{Exam Sheet for Bac II}
 %todo: Define Khmer Numbers
@@ -133,7 +138,7 @@
 	\exp_after:wN \int_to_khmer:n \cs:w c@#1 \cs_end:
 }
 \cs_new:Npn \int_to_khmer:n #1 {
-	\exp_after:wN \_int_to_khmer:n \__int_value:w #1 \q_nil
+	\exp_after:wN \_int_to_khmer:n \int_value:w #1 \q_nil
 }
 \cs_new:Npn \_int_to_khmer:n #1 {
 	\if_meaning:w #1 \q_nil
@@ -277,6 +282,14 @@
 		\hrulefill%
 		\faPhoneSquare{} ~ \l_phone_label_tl{} ~ \l_phone_number_tl}%
 	\tex_let:D \@evenfoot \@oddfoot%
+}
+\int_new:N \l_tempa_int
+\cs_new:Npn \dotline #1 {%
+	\linespread{1.5}\selectfont\color{gray}
+	\int_set:Nn \l_tempa_int { 1 }
+	\int_do_until:nNnn { \l_tempa_int } = { #1 }{ 
+		\int_incr:N\l_tempa_int \noindent\hphantom{}\dotfill\\ }
+	\hphantom{}\dotfill
 }
 \pagestyle{plain}
 \raggedbottom
